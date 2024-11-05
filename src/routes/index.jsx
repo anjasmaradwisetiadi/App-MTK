@@ -19,6 +19,42 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/register",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
+    path: "/unknown",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
+    path: "/users",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
+    path: "/about",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+        <Dashboard></Dashboard>
+    ),
+  },
+  {
     path: "/dashboard",
     element: (
         <Dashboard></Dashboard>

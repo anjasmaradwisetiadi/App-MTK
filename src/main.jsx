@@ -6,15 +6,16 @@ import {
 import router from './routes/index.jsx';
 import './css/index.css'
 import Navbar from './components/Navbar.jsx'
+import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <div>
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
       <React.StrictMode>
         <div className="container">
           <RouterProvider router={router} />
         </div>
         {/* <App /> */}
-      </React.StrictMode>,
+      </React.StrictMode>
   </div>
 )
