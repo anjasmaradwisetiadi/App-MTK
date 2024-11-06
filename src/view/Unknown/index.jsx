@@ -1,13 +1,13 @@
-import './index.module.scss'
+import './index.scss'
 
-const unknown = ()=>{
+const Unknown = ()=>{
     return (
         <>
             <div>
-                ini unknown
+                ini Unknown
             </div>
         </>
     )
 }
 
-export default unknown
+export default Unknown

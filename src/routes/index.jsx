@@ -1,65 +1,68 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-} from "react-router-dom";
 import Dashboard from '../view/Dashboard/Dashboard'
-import PageNotFound from "../components/PageNotFound";
+import PageNotFound from "../components/PageNotFound/PageNotFound";
+import Unknown from "../view/Unknown"
+import Users from "../view/Users"
+import Login from "../view/Auth/Login"
+import Register from "../view/Auth/Register"
+import Profile from "../view/Profile"
+import About from "../view/About";
 
 
-const router = createBrowserRouter([
+const router = [
   {
-    path: "/",
-    errorElement: <PageNotFound></PageNotFound>,
-    element: (
-        <Dashboard></Dashboard>
+    name: "/",
+    key: "/",
+    route: "/",
+    element: ( 
+      <Users></Users>
     ),
   },
   {
-    path: "/register",
+    name: "register",
+    key: "register",
+    route: "/register",
     element: (
-        <Dashboard></Dashboard>
+        <Register></Register>
     ),
   },
   {
-    path: "/login",
+    name: "login",
+    key: "login",
+    route: "/login",
     element: (
-        <Dashboard></Dashboard>
+        <Login></Login>
     ),
   },
   {
-    path: "/unknown",
+    name: "unknown",
+    key: "unknown",
+    route: "/unknown",
     element: (
-        <Dashboard></Dashboard>
+        <Unknown></Unknown>
     ),
   },
   {
-    path: "/users",
+    name: "users",
+    key: "users",
+    route: "/users",
     element: (
-        <Dashboard></Dashboard>
+        <Users></Users>
     ),
   },
   {
     path: "/about",
     element: (
-        <Dashboard></Dashboard>
+        <About></About>
     ),
   },
   {
     path: "/profile",
     element: (
-        <Dashboard></Dashboard>
+        <Profile></Profile>
     ),
   },
-  {
-    path: "/dashboard",
-    element: (
-        <Dashboard></Dashboard>
-    ),
-  },
-]);
+];
 
 export default router

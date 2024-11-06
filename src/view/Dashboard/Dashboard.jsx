@@ -1,6 +1,6 @@
 
 
-import Loading from '../../components/Loading'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 import { Button } from "flowbite-react";
 import { Banner } from "flowbite-react";
 import { HiX } from "react-icons/hi";

@@ -10,6 +10,7 @@ import {
   import exampleSlice from './Example/Example';
   import usersSlice from './Users/Users';
   import unknownSlice from './Unknown/Unknown';
+  import navbarSlice from './Navbar/Navbar';
 
   const store = configureStore({
 
@@ -22,7 +23,8 @@ import {
     reducer:{
         example: exampleSlice.reducer,
         users: usersSlice.reducer,
-        unknown: unknownSlice.reducer
+        unknown: unknownSlice.reducer,
+        navbar: navbarSlice.reducer,
         // login: loginReducer
     }
   })

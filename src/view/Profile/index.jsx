@@ -1,13 +1,13 @@
-import './index.module.scss'
+import './index.scss'
 
-const profile = ()=>{
+const Profile = ()=>{
     return (
         <>
             <div>
-                ini profile
+                ini Profile
             </div>
         </>
     )
 }
 
-export default profile
+export default Profile

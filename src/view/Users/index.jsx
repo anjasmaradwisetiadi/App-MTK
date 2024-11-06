@@ -1,13 +1,13 @@
-import './index.module.scss'
+import './index.scss'
 
-const users = ()=>{
+const Users = ()=>{
     return (
         <>
             <div>
-                ini users
+                ini Users
             </div>
         </>
     )
 }
 
-export default users
+export default Users

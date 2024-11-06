@@ -1,6 +1,6 @@
-import './index.module.scss'
+import './index.scss'
 
-const register = ()=>{
+const Register = ()=>{
     return (
         <>
             <div>
@@ -10,4 +10,4 @@ const register = ()=>{
     )
 }
 
-export default register
+export default Register
