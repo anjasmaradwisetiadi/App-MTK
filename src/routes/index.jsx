@@ -52,13 +52,17 @@ const router = [
     ),
   },
   {
-    path: "/about",
+    name: "about",
+    key: "about",
+    route: "/about",
     element: (
         <About></About>
     ),
   },
   {
-    path: "/profile",
+    name: "profile",
+    key: "profile",
+    route: "/profile",
     element: (
         <Profile></Profile>
     ),

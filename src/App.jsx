@@ -44,13 +44,19 @@ function App() {
               ((currentPath !== '/login') && (currentPath !== '/register')) &&
               (<SidebarComponent></SidebarComponent>)
             }
-              <div className="w-full h-full flex relative justify-center relative overflow-x-hidden overflow-y-auto pt-28">
-                  <div className="lg:w-56 lg:ml-10 ">
-                  </div>
-                  <Routes key={location.pathname}>
-                          {getRoutes(router)}
-                          <Route path="*" element={<ErrorPage />} />
-                  </Routes>
+
+              <div className="w-full h-full flex relative justify-center relative overflow-x-hidden overflow-y-hidden">
+                  <section className={(currentPath !== '/login') && (currentPath !== '/register') ? 'pt-20 px-8 w-full flex':''}>
+                  { 
+                    // for flll empty space 
+                    ((currentPath !== '/login') && (currentPath !== '/register')) &&
+                    ( <div className="lg:w-64 lg:ml-8"></div>)
+                  }
+                    <Routes key={location.pathname}>
+                            {getRoutes(router)}
+                            <Route path="*" element={<ErrorPage />} />
+                    </Routes>
+                  </section>
               </div>
         </main>
         { 

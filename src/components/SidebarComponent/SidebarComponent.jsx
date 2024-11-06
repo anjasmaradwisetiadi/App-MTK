@@ -83,6 +83,17 @@ const SidebarComponent = ()=>{
                         >
                             Unknown
                         </Sidebar.Item>
+                        <Sidebar.Item
+                            onClick={()=>(navigate('/about'))}
+                            icon={HiCollection}
+                            className={
+                            "/about" === location.pathname
+                                ? "bg-gray-200 dark:bg-gray-700"
+                                : ""
+                            }
+                        >
+                            About
+                        </Sidebar.Item>
                         </Sidebar.ItemGroup>
                     </Sidebar.Items>
                     </div>
