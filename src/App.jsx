@@ -15,6 +15,7 @@ import SidebarComponent from './components/SidebarComponent/SidebarComponent.jsx
 
 function App() {
   const [count, setCount] = useState(0)
+  const [currentPath, setCurrentPath] = useState('');
   const location = useLocation()
 
   const getRoutes = (allRoutes) =>
@@ -28,19 +29,21 @@ function App() {
   });
 
   useEffect(() => {
-    const currentPath = location.pathname;
-    console.log("currentPath = ", currentPath)
+    setCurrentPath(location.pathname);
   }, [location]);
 
   return (
     <>
       <div className='flex flex-col w-full h-screen bg-gray-200 dark:bg-gray-900'>
         { 
-          ((location.pathname !== '/login') && (location.pathname !== '/register')) &&
-          <NavbarComponent></NavbarComponent>
+          ((currentPath !== '/login') && (currentPath !== '/register')) &&
+          (<NavbarComponent></NavbarComponent>)
         }
         <main className='flex h-full w-full z-20'>
-            <SidebarComponent></SidebarComponent>
+            { 
+              ((currentPath !== '/login') && (currentPath !== '/register')) &&
+              (<SidebarComponent></SidebarComponent>)
+            }
               <div className="w-full h-full flex relative justify-center relative overflow-x-hidden overflow-y-auto pt-28">
                   <div className="lg:w-56 lg:ml-10 ">
                   </div>
@@ -51,8 +54,8 @@ function App() {
               </div>
         </main>
         { 
-          ((location.pathname !== '/login') && (location.pathname !== '/register')) &&
-          <FooterComponent></FooterComponent>
+          ((currentPath !== '/login') && (currentPath !== '/register')) &&
+          (<FooterComponent></FooterComponent>)
         }
       </div>
     </>
