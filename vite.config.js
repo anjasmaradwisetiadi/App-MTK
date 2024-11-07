@@ -10,5 +10,12 @@ export default defineConfig(({ command, mode }) => {
       define: {
         'process.env.APP_URL_REQRES': JSON.stringify(env.APP_URL_REQRES),
       },
+      css: {
+        preprocessorOptions: {
+            scss: {
+              api: 'modern-compiler'
+            }
+      }
+    }
   };
 });

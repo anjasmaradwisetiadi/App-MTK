@@ -27,13 +27,37 @@ import {
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 
 const ModalForm = (props)=>{
-    const { isOpen, titleModal  } = props 
-    const loadingForm = false
+    const { isOpen, titleModal  } = props;
+    const loadingForm = false;
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [image, setImage] = useState("")
+    const [imagePreview, setImagePreview] = useState("")
+
+    // ******** error state on form 
+    const [firstNameError, setFirstNameError] = useState(true)
+    const [lastNameError, setLastNameError] = useState(true)
+    const [emailError, setEmailNameError] = useState(true)
+    const [imageError, setImageNameError] = useState(true)
 
     useEffect(() => {
       console.log("terbuka modal= ");
       console.log(isOpen);
     }, [isOpen]);
+
+    // const checkValidity = ()=>{
+    //     const 
+    //     return
+    // }
+
+    const handleSubmit = () =>{
+        console.log("firstName:", firstName);
+        console.log("lastName:", lastName);
+        console.log("email:", email);
+        console.log("image:", image);
+        console.log("imagePreview:", imagePreview);
+    }
 
     const ContainCreateModal = () =>{
         return (
@@ -60,14 +84,29 @@ const ModalForm = (props)=>{
                       id="firstName"
                       name="firstName"
                       placeholder="Bonnie"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
+                  {
+                    firstNameError && 
+                    (<span className="invalid-feedback"> Please fill your first name</span>)
+                  }
                 </div>
                 <div>
                   <Label htmlFor="lastName">Last name</Label>
                   <div className="mt-1">
-                    <TextInput id="lastName" name="lastName" placeholder="Green" />
+                    <TextInput 
+                    id="lastName" name="lastName" placeholder="Green" 
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+
+                 />
                   </div>
+                  {
+                    lastNameError && 
+                    (<span className="invalid-feedback"> Please fill your last name</span>)
+                  }
                 </div>
               </div>
               <div className="grid grid-cols-1">
@@ -79,20 +118,26 @@ const ModalForm = (props)=>{
                         name="email"
                         placeholder="example@company.com"
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
+                    {
+                    emailError && 
+                    (<span className="invalid-feedback"> Please fill your mail</span>)
+                  }
                 </div>
                 <div>
                     <div className="mb-2 block">
                         <Label htmlFor="file-upload" value="Upload file" />
                     </div>
-                    <FileInput id="file-upload" />
+                    <FileInput id="file-upload" onChange={(e) => setImage(e.target.value)} />
                 </div>
     
              </div>
             </Modal.Body>
             <Modal.Footer>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 w-full ">
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 w-full " onClick={handleSubmit}>
                   Submit
                 </button>
             </Modal.Footer>
