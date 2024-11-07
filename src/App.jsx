@@ -39,7 +39,7 @@ function App() {
           ((currentPath !== '/login') && (currentPath !== '/register')) &&
           (<NavbarComponent></NavbarComponent>)
         }
-        <main className='flex h-full w-full z-20'>
+        <main className='flex h-full w-full z-20 overflow-hidden mb-6'>
             { 
               ((currentPath !== '/login') && (currentPath !== '/register')) &&
               (<SidebarComponent></SidebarComponent>)

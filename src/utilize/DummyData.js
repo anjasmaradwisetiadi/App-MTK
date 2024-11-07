@@ -1,4 +1,4 @@
-export const usersList = {
+export const usersListDummy = {
     "page": 1,
     "per_page": 10,
     "total": 12,

@@ -32,8 +32,8 @@ const Register = ()=>{
                             <div className="relative flex justify-center items-center">
                                 <input
                                     type="text"
-                                    placeholder="  Full Name"
-                                    className="w-full py-3 mb-2 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500"
+                                    placeholder="Full Name"
+                                    className="w-full py-3 mb-2 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500 indent-3"
                                 />
                                 <span className="absolute left-4 top-2.5 text-gray-400 material-symbols-outlined text-2xl">
                                     person
@@ -43,7 +43,7 @@ const Register = ()=>{
                                 <input
                                     type="email"
                                     placeholder="  Email Address"
-                                    className="w-full py-3 mb-2 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500"
+                                    className="w-full py-3 mb-2 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500 indent-3"
                                 />
                                 <span className="absolute left-4 top-2.5 text-gray-400 material-symbols-outlined text-2xl">
                                     mail
@@ -52,8 +52,8 @@ const Register = ()=>{
                             <div className="relative">
                             <input
                                 type="password"
-                                placeholder="  Password"
-                                className="w-full py-3 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500"
+                                placeholder="Password"
+                                className="w-full py-3 px-6 pl-10 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:border-blue-500 indent-3"
                             />
                                 <span className="absolute left-4 top-2.5 mr-2 text-gray-400 material-symbols-outlined text-2xl">
                                     lock
