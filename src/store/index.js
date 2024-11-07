@@ -29,4 +29,8 @@ import {
     }
   })
 
+//   store.subscribe(() => {
+//   console.log("STORE CHANGE:", store.getState());
+// });
+
   export default store;

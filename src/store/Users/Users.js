@@ -1,5 +1,5 @@
 // ************ make example rudex when it can example code used
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 
 const usersSlice = createSlice({
     name: 'users',
@@ -9,36 +9,44 @@ const usersSlice = createSlice({
         detailResponse: null,
         updateResponse: null,
         deleteResponse: null,
+        isFetched: false,
         loading: false,
+        loadingForm: false,
+        error:false
     },
     reducers: {
       usersListReducer(state, payload) {
         state.usersList = payload.payload
       },
-      createResponseReducer(state, payload){
+      createUsersResponseReducer(state, payload){
         state.createResponse = payload.payload
       },
-      getDetailResponseReducer(state, payload){
+      getDetailUsersResponseReducer(state, payload){
         state.detailResponse = payload.payload
       },
-      updateResponseReducer(state, payload){
+      updateUsersResponseReducer(state, payload){
         state.updateResponse = payload.payload 
       },
-      deleteResponseReducer(state, payload){
+      deleteUsersResponseReducer(state, payload){
         state.deleteResponse = payload.payload
       },
       loadingReducer(state, payload){
         state.loading = payload.payload;
+      },
+      loadingFormReducer(state, payload){
+        state.loadingForm = payload.payload;
       }
     },
 })
 
 export const {
   usersListReducer, 
-  createResponseReducer,
-  getDetailResponseReducer,
-  updateResponseReducer,
-  deleteResponseReducer,
-  loadingReducer
+  userReducer,
+  createUsersResponseReducer,
+  getDetailUsersResponseReducer,
+  updateUsersResponseReducer,
+  deleteUsersResponseReducer,
+  loadingReducer,
+  loadingFormReducer
 } = usersSlice.actions;
 export default usersSlice;

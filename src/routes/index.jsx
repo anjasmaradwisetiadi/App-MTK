@@ -43,14 +43,14 @@ const router = [
       <WrapAuth name='users'></WrapAuth>
     ),
   },
-  {
-    name: "about",
-    key: "about",
-    route: "/about",
-    element: (
-      <WrapAuth name='about'></WrapAuth>
-    ),
-  },
+  // {
+  //   name: "about",
+  //   key: "about",
+  //   route: "/about",
+  //   element: (
+  //     <WrapAuth name='about'></WrapAuth>
+  //   ),
+  // },
 ];
 
 export default router
