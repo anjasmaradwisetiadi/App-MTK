@@ -4,7 +4,9 @@ import viteLogo from '/vite.svg'
 import {
   Routes,
   Route,
-  useLocation
+  useLocation,
+  useNavigate,
+  Navigate
 } from "react-router-dom"
 import router from './routes/index.jsx';
 import ErrorPage from './components/ErrorPage/ErrorPage.jsx';
@@ -17,15 +19,14 @@ function App() {
   const [count, setCount] = useState(0)
   const [currentPath, setCurrentPath] = useState('');
   const location = useLocation()
+  const itemStorage = localStorage.getItem("user") ? localStorage.getItem("user") : null;
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
-      if (route.name !== 'login') {
+      if (route) {
         return <Route exact path={route.route} element={route.element} key={route.key} />;
-      } else {
-        return <Route exact path={route.route} element={route.element} key={route.key} />;
-      }
-      
+      } 
+      return null
   });
 
   useEffect(() => {
@@ -41,8 +42,10 @@ function App() {
         }
         <main className='flex h-full w-full z-20 overflow-hidden mb-6'>
             { 
-              ((currentPath !== '/login') && (currentPath !== '/register')) &&
-              (<SidebarComponent></SidebarComponent>)
+              ((currentPath !== '/login') 
+              && (currentPath !== '/register')) 
+              && itemStorage
+              && (<SidebarComponent></SidebarComponent>)
             }
 
               <div className="w-full h-full flex relative justify-center relative overflow-x-hidden overflow-y-hidden">

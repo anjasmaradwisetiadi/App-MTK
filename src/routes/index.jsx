@@ -1,14 +1,6 @@
 import * as React from "react";
-import { createRoot } from "react-dom/client";
-import Dashboard from '../view/Dashboard/Dashboard'
-import PageNotFound from "../components/PageNotFound/PageNotFound";
-import Unknown from "../view/Unknown"
-import Users from "../view/Users"
-import Login from "../view/Auth/Login"
-import Register from "../view/Auth/Register"
-import Profile from "../view/Profile"
-import About from "../view/About";
-
+import WrapAuth from "./WrapAuth";
+import WrapNonAuth from "./WrapNonAuth";
 
 const router = [
   {
@@ -16,7 +8,7 @@ const router = [
     key: "/",
     route: "/",
     element: ( 
-      <Users></Users>
+      <WrapAuth name='users'></WrapAuth>
     ),
   },
   {
@@ -24,7 +16,7 @@ const router = [
     key: "register",
     route: "/register",
     element: (
-        <Register></Register>
+      <WrapNonAuth name='register'></WrapNonAuth>
     ),
   },
   {
@@ -32,7 +24,7 @@ const router = [
     key: "login",
     route: "/login",
     element: (
-        <Login></Login>
+      <WrapNonAuth name='login'></WrapNonAuth>
     ),
   },
   {
@@ -40,7 +32,7 @@ const router = [
     key: "unknown",
     route: "/unknown",
     element: (
-        <Unknown></Unknown>
+      <WrapAuth name='unknown'></WrapAuth>
     ),
   },
   {
@@ -48,7 +40,7 @@ const router = [
     key: "users",
     route: "/users",
     element: (
-        <Users></Users>
+      <WrapAuth name='users'></WrapAuth>
     ),
   },
   {
@@ -56,15 +48,7 @@ const router = [
     key: "about",
     route: "/about",
     element: (
-        <About></About>
-    ),
-  },
-  {
-    name: "profile",
-    key: "profile",
-    route: "/profile",
-    element: (
-        <Profile></Profile>
+      <WrapAuth name='about'></WrapAuth>
     ),
   },
 ];

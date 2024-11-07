@@ -77,8 +77,8 @@ const SidebarComponent = ()=>{
                             icon={HiShoppingBag}
                             className={
                             "/unknown" === location.pathname
-                                ? "bg-gray-200 dark:bg-gray-700"
-                                : ""
+                                ? "bg-gray-200 dark:bg-gray-700 cursor-pointer"
+                                : "cursor-pointer"
                             }
                         >
                             Unknown
@@ -88,8 +88,8 @@ const SidebarComponent = ()=>{
                             icon={HiCollection}
                             className={
                             "/about" === location.pathname
-                                ? "bg-gray-200 dark:bg-gray-700"
-                                : ""
+                                ? "bg-gray-200 dark:bg-gray-700 cursor-pointer"
+                                : "cursor-pointer"
                             }
                         >
                             About

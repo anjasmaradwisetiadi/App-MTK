@@ -5,15 +5,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
 import { Dropdown } from "flowbite-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { signOutService } from "../../service/Auth";
+import { errorHandle } from "../../utilize/ErrorHandle";
+import Profile from "../../view/Profile";
+import Swal from "sweetalert2";
 
 const NavbarComponent = ()=>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
 
     const getIsSidebarOpen = useSelector((state)=> state.navbar.isSidebarOpen);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    let itemStorage = localStorage.getItem("user") ? localStorage.getItem("user") : null;
     const openSidebar = () =>{
         dispatch(sidebarOpenReducer(!getIsSidebarOpen));
     }
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+      };
 
     const buttonProfileComponent = ()=>{
         return (
@@ -33,6 +44,35 @@ const NavbarComponent = ()=>{
                 </div>
             </div>
         )
+    }
+
+    const onSignOut = () =>{
+        Swal.fire({
+            title: "Logout ?",
+            text: "Are you sure want logout",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, i want logout",
+            confirmButtonColor:"#1874e7",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const response = signOutService()
+              response.then((result)=>{
+                if(result.success){
+                    localStorage.removeItem('user');
+                    navigate("/login");
+                    Swal.fire({
+                      title: "Logout",
+                      text: "You have logout",
+                      icon: "success",
+                      confirmButtonColor:"#1874e7",
+                    });
+                } else {
+                    errorHandle.errorMessage()
+                }
+              })
+            }
+          });
     }
     
     return(
@@ -75,20 +115,30 @@ const NavbarComponent = ()=>{
                             </svg>
                         </button>
                         <div>
-                        <Dropdown label="" dismissOnClick={false} renderTrigger={buttonProfileComponent}>
-                            <Dropdown.Header>
-                                <span className="block text-sm">Bonnie Green</span>
-                                <span className="block truncate text-sm font-medium">bonnie@flowbite.com</span>
-                            </Dropdown.Header>
-                            <Dropdown.Item onClick={()=>(navigate('/profile'))}>Profile</Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item>Sign out</Dropdown.Item>
-                        </Dropdown>
+                            {
+                                itemStorage && 
+                                (<Dropdown label="" dismissOnClick={false} renderTrigger={buttonProfileComponent}>
+                                    <Dropdown.Header>
+                                        <span className="block text-sm">Bonnie Green</span>
+                                        <span className="block truncate text-sm font-medium">bonnie@flowbite.com</span>
+                                    </Dropdown.Header>
+                                    <Dropdown.Item onClick={()=>(setIsModalOpen(!isModalOpen))}>Profile</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item onClick={onSignOut}>Sign out</Dropdown.Item>
+                                </Dropdown>)
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </Navbar>
+        {/* modal profile */}
+        <>
+            <Profile 
+                isOpen = {isModalOpen}
+                modalClose={handleCloseModal}
+            ></Profile>
+        </>
         </>
     )
 }
