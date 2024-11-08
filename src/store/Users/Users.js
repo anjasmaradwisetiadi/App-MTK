@@ -39,7 +39,7 @@ const usersSlice = createSlice({
           "data": newPayloadUserList
         }
         state.usersList = newFilterResult
-        tate.loading = false;
+        state.loading = false;
       },
       createUsersResponseReducer(state, payload){
         state.createResponse = payload.payload
