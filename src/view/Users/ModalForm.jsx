@@ -12,6 +12,7 @@ import {
   updateUsersService,
 } from "../../service/Users";
 import { useDispatch, useSelector } from "react-redux";
+import { errorHandle } from "../../utilize/ErrorHandle";
 
 const ModalForm = (props) => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const ModalForm = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [idUser, setIdUser] = useState(null)
   const imageElement = useRef(null);
@@ -68,6 +69,7 @@ const ModalForm = (props) => {
   };
 
   const handleSubmit = () => {
+  
     if (!checkValidity()) {
       if (titleModal === "create_form") {
         const imageValidate = image ? false : true;
@@ -81,24 +83,41 @@ const ModalForm = (props) => {
           };
           dispatch(createUsersService(payload))
           modalClose()
+        }else {
+          errorHandle.errorMessage()
         }
       }
-      else {
+      else { 
         let payload = {
           email: email,
           first_name: firstName,
           last_name: lastName,
         };
-        if(image){
-          payload = {
-            ...payload,
-            avatar:image
+        if(imagePreview){
+            payload = {
+              ...payload,
+              avatar:image
+            }
+            dispatch(updateUsersService(idUser,payload))
+            modalClose()
+        } else {
+          const imageValidate = image !== null ? false : true;
+          setImageNameError(imageValidate)
+          if(!imageValidate){
+            payload = {
+              ...payload,
+              avatar:image
+            }
+            dispatch(updateUsersService(idUser,payload))
+            modalClose()
+          } else {
+            errorHandle.errorMessage()
           }
-          dispatch(updateUsersService(idUser,payload))
-          modalClose()
         }
       }
-    } 
+    } else {
+      errorHandle.errorMessage()
+    }
   };
 
   const modalClose = () => {
@@ -125,8 +144,8 @@ const ModalForm = (props) => {
     setFirstName("");
     setLastName("");
     setEmail("");
-    setImage("");
-    setImagePreview("");
+    setImage(null);
+    setImagePreview(null);
     setFirstNameError(false);
     setLastNameError(false);
     setEmailNameError(false);

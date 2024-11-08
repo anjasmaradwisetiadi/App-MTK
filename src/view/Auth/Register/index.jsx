@@ -32,7 +32,7 @@ const Register = ()=>{
             response.then((result)=>{
                 if (result.success) {
                     Swal.fire({
-                        title: "Successfull Login ",
+                        title: "Successfull Register ",
                         text: "You will redirect to Login",
                         icon: "success",
                         confirmButtonText: "Go To Login",
