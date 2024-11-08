@@ -154,11 +154,11 @@ const Users = () => {
 
 
   const handleCheckAll = () => {
-    // const newCheckedItems = { ...checkedItems };
-    // getListUsers.data.forEach((item) => {
-    //   newCheckedItems[item.id] = !isAllCheckedOnPage;
-    // });
-    // setCheckedItems(newCheckedItems);
+    const newCheckedItems = { ...checkedItems };
+    getListUsers.data.forEach((item) => {
+      newCheckedItems[item.id] = !isAllCheckedOnPage;
+    });
+    setCheckedItems(newCheckedItems);
   };
 
   const handleExport = () =>{
