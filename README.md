@@ -1,9 +1,8 @@
 # built-admin-tst
 
 This template should help get you started developing with ReactJs in Vite.
-youcan look for review app on thi link [app-admin](https://angular-guidance.web.app/)  
->
-Note: 
+youcan look for review app on this link [app-admin](https://angular-guidance.web.app/)  
+you can look documantation app on this link [doc](https://docs.google.com/document/d/1JS0vHjlpuvIura16ekiVrCuQCIU-fmP4lGCCbpTBpW4/edit?tab=t.0#heading=h.7k5nt4bfa3ej)
 
 ## Customize configuration
 See [Vite Configuration Reference](https://vitejs.dev/config/).
