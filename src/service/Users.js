@@ -130,3 +130,7 @@ export const filterUserService = (payload, paramsFilter) => {
         })
     }
 }
+
+export const getDataForUserExport = async (payload) =>{
+    return await instanceAxios.get(`users?${payload.concatFilterParams}`)
+}

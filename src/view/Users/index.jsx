@@ -1,28 +1,15 @@
 import "./index.scss";
 import {
-  Breadcrumb,
-  Button,
   Checkbox,
   Label,
-  Modal,
   Table,
   TextInput,
   Dropdown,
-  FileInput,
   Spinner
 } from "flowbite-react";
 import {
   HiChevronLeft,
   HiChevronRight,
-  HiCog,
-  HiDocumentDownload,
-  HiDotsVertical,
-  HiExclamationCircle,
-  HiHome,
-  HiOutlineExclamationCircle,
-  HiOutlinePencilAlt,
-  HiPlus,
-  HiTrash,
 } from "react-icons/hi";
 import React, { useEffect, useState, useMemo } from "react";
 import { usersListDummy } from "../../utilize/DummyData";
@@ -30,7 +17,8 @@ import {
     getDetailUsersService, 
     getListUsersService, 
     deleteUsersService, 
-    filterUserService
+    filterUserService,
+    getDataForUserExport
 } from "../../service/Users";
 // import { getListUsersService } from "../../store/Users/Users";
 import ModalForm from "./ModalForm";
@@ -44,6 +32,7 @@ import {
 } from "../../store/Users/Users";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx/xlsx.mjs';
+import { errorHandle } from "../../utilize/ErrorHandle";
 
 
 const Users = () => {
@@ -58,7 +47,8 @@ const Users = () => {
   const [filterFirstName, setFilterFirstName] = useState('');
   const [filterLastName, setFilterLastName] = useState('');
   const [checkedItems, setCheckedItems] = useState({});
-  const [isAllCheckedOnPage, setIsAllCheckedOnPage] = useState(false);
+  const [checkAll, setCheckAll] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]); 
 //   const [getListUsers, setGetListUsers] = useState(null);
 
   const getListUsers = useSelector((state) => state.users.usersList );
@@ -74,8 +64,7 @@ const Users = () => {
 
   useEffect(()=>{
     if(getListUsers){
-      const allCheckedOnPage = getListUsers?.data?.every((item) => checkedItems[item.id]);
-      setIsAllCheckedOnPage(allCheckedOnPage)
+      setPage(getListUsers?.page)
     }
   },[getListUsers])
 
@@ -149,38 +138,62 @@ const Users = () => {
   }
 
   const handleCheckItem = (id) => {
-      setCheckedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+    const isSelected = selectedItems.includes(id);
+    const updatedSelectedItems = isSelected
+      ? selectedItems.filter((itemId) => itemId !== id)
+      : [...selectedItems, id];
+    setSelectedItems(updatedSelectedItems);
+
+    // Update "check all" status
+    const currentPageItems = getListUsers.data.map((item) => item.id);
+    setCheckAll((prevCheckAll) => ({
+      ...prevCheckAll,
+      [page]: currentPageItems.every((itemId) =>
+        updatedSelectedItems.includes(itemId)
+      ),
+    }));
   };
 
 
   const handleCheckAll = () => {
-    const newCheckedItems = { ...checkedItems };
-    getListUsers.data.forEach((item) => {
-      newCheckedItems[item.id] = !isAllCheckedOnPage;
-    });
-    setCheckedItems(newCheckedItems);
+    const currentPageItems = getListUsers.data.map((item) => item.id);
+    const isAllSelected = checkAll[page];
+    const updatedSelectedItems = isAllSelected
+      ? selectedItems.filter((id) => !currentPageItems.includes(id))
+      : [...selectedItems, ...currentPageItems.filter((id) => !selectedItems.includes(id))];
+    setSelectedItems(updatedSelectedItems);
+    setCheckAll((prevCheckAll) => ({
+      ...prevCheckAll,
+      [page]: !isAllSelected,
+    }));
   };
 
   const handleExport = () =>{
-      let fileName = 'Users' 
-      let result=Object.keys(checkedItems).filter((key) => checkedItems[key])
-      let data = [];
+      let collectAllUserList;
+      getDataForUserExport(pagePayload(1,100))
+        .then((response)=>{
+            collectAllUserList = response.data
+            let fileName = 'Users' 
+            let data = [];
+            
+            response.data.data.forEach((item, index)=>{
+              selectedItems.forEach((itm, idx) => {
+                if(itm == item.id){
+                  data.push(item)
+                }
+              })
+            })
 
-      userList.data.forEach((item, index)=>{
-        result.forEach((itm, idx) => {
-          if(itm == item.id){
-            data.push(item)
-          }
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
+            saveAs(blob, `${fileName}.xlsx`);
         })
-      })
-      // setCollectDataExcel(data)
-
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-      saveAs(blob, `${fileName}.xlsx`);
+        .catch((error)=>{
+            errorHandle.errorMessage()
+        })
   }
 
   const handleReset = ()=>{
@@ -267,7 +280,7 @@ const Users = () => {
                     Select all
                   </Label>
                   <Checkbox id="select-all" name="select-all" 
-                    checked={isAllCheckedOnPage}
+                  checked={checkAll[page] || false}
                     onChange={handleCheckAll}
                   />
                 </Table.HeadCell>
@@ -299,7 +312,7 @@ const Users = () => {
                                 <Checkbox
                                 aria-describedby="checkbox-1"
                                 id="checkbox-1"
-                                checked={!!checkedItems[item.id]}
+                                checked={selectedItems.includes(item.id)}
                                 onChange={() => handleCheckItem(item.id)}
                                 />
                                 <label htmlFor="checkbox-1" className="sr-only">
@@ -431,7 +444,7 @@ export const PaginationComponent = (props) => {
         </button>
         <button
           onClick={nextPage}
-          disabled={userList?.page === userList?.total_page}
+          disabled={userList?.page === userList?.total_pages}
           role="button"
           type="button"
           className="mr-2 inline-flex justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:text-gray-200"
