@@ -1,7 +1,9 @@
-import Login from "../../view/Auth/Login"
-import Register from "../../view/Auth/Register"
+// import Login from "../../view/Auth/Login"
+// import Register from "../../view/Auth/Register"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy } from "react"
+const Login = lazy(()=> import ("../../view/Auth/Login"))
+const Register = lazy(()=> import ("../../view/Auth/Register"))
 
 const WrapNonAuth = (props)=>{
     const { name } = props;

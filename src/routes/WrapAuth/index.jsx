@@ -1,8 +1,9 @@
-import Unknown from "../../view/Unknown"
-import Users from "../../view/Users"
-import About from "../../view/About";
+
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy } from "react"
+const Unknown = lazy(()=> import ("../../view/Unknown"))
+const About = lazy(()=> import ("../../view/About"))
+const Users  = lazy(()=> import ("../../view/Users"))
 
 const WrapAuth = (props)=>{
     const { name } = props;
