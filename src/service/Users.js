@@ -2,6 +2,7 @@
 import instanceAxios from "../utilize/InitializeAxios";
 import { 
     usersListReducer,
+    userListFilterReducer,
     createUsersResponseReducer,
     getDetailUsersResponseReducer,
     updateUsersResponseReducer,
@@ -106,6 +107,24 @@ export const deleteUsersService  = (id) =>{
         .catch((error)=>{
             console.log("error message = ");
             console.log(error)
+            errorHandle.errorMessage()
+            dispatch(loadingReducer(false))
+        })
+    }
+}
+
+export const filterUserService = (payload, paramsFilter) => {
+    return async (dispatch) =>{
+        dispatch(loadingReducer(true))
+        await instanceAxios.get(`users?${payload.concatFilterParams}`)
+        .then((response)=>{
+            const payloadReducer = {
+                data: response?.data,
+                params_filter: paramsFilter
+            }
+            dispatch(userListFilterReducer(payloadReducer))
+        })
+        .catch((error)=>{
             errorHandle.errorMessage()
             dispatch(loadingReducer(false))
         })

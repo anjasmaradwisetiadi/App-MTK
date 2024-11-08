@@ -72,7 +72,7 @@ const SidebarComponent = ()=>{
                         >
                             Users list
                         </Sidebar.Item>
-                        <Sidebar.Item
+                        {/* <Sidebar.Item
                             onClick={()=>(navigate('/unknown'))}
                             icon={HiShoppingBag}
                             className={
@@ -82,7 +82,7 @@ const SidebarComponent = ()=>{
                             }
                         >
                             Unknown
-                        </Sidebar.Item>
+                        </Sidebar.Item> */}
                         <Sidebar.Item
                             onClick={()=>(navigate('/about'))}
                             icon={HiCollection}

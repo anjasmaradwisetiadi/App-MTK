@@ -18,6 +18,29 @@ const usersSlice = createSlice({
       usersListReducer(state, payload) {
         state.usersList = payload.payload
       },
+
+      userListFilterReducer(state, payload){
+
+        // state.usersList = payload.payload
+        let payloadUserList = payload.payload.data
+        let payloadUserParamsFilter = payload.payload.params_filter
+
+        //********* */ calculate filter manual from FE
+        let newPayloadUserList = payloadUserList.data.filter((item,index)=>{
+          return item.first_name.trim().toLowerCase().includes(payloadUserParamsFilter.filter_first_name.trim().toLowerCase())
+        })
+        newPayloadUserList = newPayloadUserList.filter((item,index)=>item.last_name.trim().toLowerCase().includes(payloadUserParamsFilter.filter_last_name.trim().toLowerCase()))
+
+        const newFilterResult ={
+          "page": payloadUserList.page,
+          "per_page": payloadUserList.per_page,
+          "total": payloadUserList.total,
+          "total_pages": payloadUserList.total_pages,
+          "data": newPayloadUserList
+        }
+        state.usersList = newFilterResult
+        tate.loading = false;
+      },
       createUsersResponseReducer(state, payload){
         state.createResponse = payload.payload
       },
@@ -33,6 +56,7 @@ const usersSlice = createSlice({
       loadingReducer(state, payload){
         state.loading = payload.payload;
       },
+
       loadingFormReducer(state, payload){
         state.loadingForm = payload.payload;
       }
@@ -41,7 +65,7 @@ const usersSlice = createSlice({
 
 export const {
   usersListReducer, 
-  userReducer,
+  userListFilterReducer,
   createUsersResponseReducer,
   getDetailUsersResponseReducer,
   updateUsersResponseReducer,

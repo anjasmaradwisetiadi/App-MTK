@@ -30,6 +30,7 @@ import {
     getDetailUsersService, 
     getListUsersService, 
     deleteUsersService, 
+    filterUserService
 } from "../../service/Users";
 // import { getListUsersService } from "../../store/Users/Users";
 import ModalForm from "./ModalForm";
@@ -50,6 +51,9 @@ const Users = () => {
   const [titleModal, setTitleModal] = useState("detail_form");
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [isFilter, setIsFilter] = useState(false);
+  const [filterFirstName, setFilterFirstName] = useState('');
+  const [filterLastName, setFilterLastName] = useState('');
 //   const [getListUsers, setGetListUsers] = useState(null);
 
   const getListUsers = useSelector((state) => state.users.usersList );
@@ -120,6 +124,29 @@ const Users = () => {
     });
   };
 
+  const handleFilter = ()=>{
+    if(filterFirstName.length || filterLastName.length){
+      setIsFilter(true)
+      const payloadFilter = {
+        filter_first_name: filterFirstName,
+        filter_last_name: filterLastName,
+      }
+      dispatch(filterUserService(pagePayload(1,100), payloadFilter))
+    } else {
+      setIsFilter(false)
+      dispatch(getListUsersService(pagePayload()))
+    }
+  }
+
+  const handleReset = ()=>{
+    setIsFilter(false)
+    setFilterFirstName('')
+    setFilterLastName('')
+    setPage(1);
+    setPerPage(10);
+    dispatch(getListUsersService(pagePayload()))
+  }
+
   useEffect(()=>{
     if(!getLoadingForm && getCreateResponse){
         successHandle.successSwalData('create');
@@ -147,27 +174,35 @@ const Users = () => {
             <div className="lg:pr-3 lg:space-x-2 flex flex-col lg:flex-row">
               <div className="relative mt-1 w-full lg:w-48">
                 <TextInput
-                  id="users-search"
-                  name="users-search"
+                  id="first-name-filter"
+                  name="first-name-filter"
                   placeholder="First Name"
+                  value={filterFirstName}
+                  onChange={(e)=>{setFilterFirstName(e.target.value)}}
                 />
               </div>
               <div className="relative mt-1 w-full lg:w-48">
                 <TextInput
-                  id="users-search"
-                  name="users-search"
+                  id="last-name-filter"
+                  name="last-name-filter"
                   placeholder="Last Name"
+                  value={filterLastName}
+                  onChange={(e)=>{setFilterLastName(e.target.value)}}
                 />
               </div>
             </div>
           </div>
 
           <div className="ml-auto flex items-center space-x-2 lg:space-x-3">
-            <button className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 w-full ">
-              RESET
+            <button 
+              onClick={handleReset}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 w-full ">
+              Reset
             </button>
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600  w-full">
-              APPLY
+            <button 
+              onClick={handleFilter}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600  w-full">
+              Filter
             </button>
             <Dropdown label="Action" dismissOnClick={false}>
               <Dropdown.Item onClick={handleCreateModal}>
@@ -271,8 +306,9 @@ const Users = () => {
                 }
                 {
                     !getLoading
+                    && !isFilter
                     && getListUsers?.data?.length > 0 && 
-                    <Table.Row className="hover:bg-gray-100 dark:hover:bg-gray-700 mb-10">
+                    <Table.Row className=" mb-10">
                         <Table.Cell colSpan={5} className="w-4 p-4 ">
                         <div className="flex items-start w-full">
                             <PaginationComponent
@@ -299,25 +335,60 @@ const Users = () => {
   );
 };
 
+
 export const PaginationComponent = function (props) {
   const { userList } = props;
+  const dispatch = useDispatch();
+
+  const nextPage = (event) =>{
+    dispatch(getListUsersService(pagePayload(userList?.page+1, 10)));
+  }
+
+  const previousPage = (event) =>{
+    dispatch(getListUsersService(pagePayload(userList?.page-1, 10)));
+  }
+
+  const pagePayload = (
+    page = 1, 
+    per_page = 10
+) => {
+    let concatFilterParams = "";
+    let urlParams = new URLSearchParams(concatFilterParams.search);
+    if (page > 0) {
+      urlParams.set("page", page);
+    }
+    if (per_page > 0) {
+      urlParams.set("per_page", per_page);
+    }
+
+    return {
+      concatFilterParams: urlParams.toString(),
+    };
+  };
+
   return (
     <div className="sticky right-0 bottom-0 w-full items-center bg-white dark:border-gray-700 dark:bg-gray-800 sm:flex sm:justify-between">
       <div className="flex items-center sm:mb-0">
-        <a
-          href="#"
-          className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        <button
+          onClick={previousPage}
+          disabled={userList?.page === 1}
+          role="button"
+          type="button"
+          className="inline-flex justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:text-gray-200"
         >
           <span className="sr-only">Previous page</span>
           <HiChevronLeft className="text-2xl" />
-        </a>
-        <a
-          href="#"
-          className="mr-2 inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        </button>
+        <button
+          onClick={nextPage}
+          disabled={userList?.page === userList?.total_page}
+          role="button"
+          type="button"
+          className="mr-2 inline-flex justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white disabled:text-gray-200"
         >
           <span className="sr-only">Next page</span>
           <HiChevronRight className="text-2xl" />
-        </a>
+        </button>
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing&nbsp;
           <span className="font-semibold text-gray-900 dark:text-white">
