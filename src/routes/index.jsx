@@ -27,14 +27,14 @@ const router = [
       <WrapNonAuth name='login'></WrapNonAuth>
     ),
   },
-  // {
-  //   name: "unknown",
-  //   key: "unknown",
-  //   route: "/unknown",
-  //   element: (
-  //     <WrapAuth name='unknown'></WrapAuth>
-  //   ),
-  // },
+  {
+    name: "unknown",
+    key: "unknown",
+    route: "/unknown",
+    element: (
+      <WrapAuth name='unknown'></WrapAuth>
+    ),
+  },
   {
     name: "users",
     key: "users",

@@ -1,28 +1,15 @@
 import "./index.scss";
 import {
-  Breadcrumb,
-  Button,
   Checkbox,
   Label,
-  Modal,
   Table,
   TextInput,
   Dropdown,
-  FileInput,
   Spinner
 } from "flowbite-react";
 import {
   HiChevronLeft,
   HiChevronRight,
-  HiCog,
-  HiDocumentDownload,
-  HiDotsVertical,
-  HiExclamationCircle,
-  HiHome,
-  HiOutlineExclamationCircle,
-  HiOutlinePencilAlt,
-  HiPlus,
-  HiTrash,
 } from "react-icons/hi";
 import React, { useEffect, useState, useMemo } from "react";
 import { usersListDummy } from "../../utilize/DummyData";
@@ -30,7 +17,8 @@ import {
     getDetailUsersService, 
     getListUsersService, 
     deleteUsersService, 
-    filterUserService
+    filterUserService,
+    getDataForUserExport
 } from "../../service/Users";
 // import { getListUsersService } from "../../store/Users/Users";
 import ModalForm from "./ModalForm";
@@ -44,6 +32,7 @@ import {
 } from "../../store/Users/Users";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx/xlsx.mjs';
+import { errorHandle } from "../../utilize/ErrorHandle";
 
 
 const Users = () => {
@@ -58,7 +47,6 @@ const Users = () => {
   const [filterFirstName, setFilterFirstName] = useState('');
   const [filterLastName, setFilterLastName] = useState('');
   const [checkedItems, setCheckedItems] = useState({});
-  const [isAllCheckedOnPage, setIsAllCheckedOnPage] = useState(false);
   const [checkAll, setCheckAll] = useState({});
   const [selectedItems, setSelectedItems] = useState([]); 
 //   const [getListUsers, setGetListUsers] = useState(null);
@@ -76,8 +64,7 @@ const Users = () => {
 
   useEffect(()=>{
     if(getListUsers){
-      const allCheckedOnPage = getListUsers?.data?.every((item) => checkedItems[item.id]);
-      setIsAllCheckedOnPage(allCheckedOnPage)
+      setPage(getListUsers?.page)
     }
   },[getListUsers])
 
@@ -175,35 +162,39 @@ const Users = () => {
       ? selectedItems.filter((id) => !currentPageItems.includes(id))
       : [...selectedItems, ...currentPageItems.filter((id) => !selectedItems.includes(id))];
     setSelectedItems(updatedSelectedItems);
-    console.log("result = ")
-    console.log(checkAll )
     setCheckAll((prevCheckAll) => ({
       ...prevCheckAll,
       [page]: !isAllSelected,
     }));
   };
+  
+  const handleExport = () =>{
+      let collectAllUserList;
+      getDataForUserExport(pagePayload(1,100))
+        .then((response)=>{
+            collectAllUserList = response.data
+            let fileName = 'Users' 
+            let data = [];
+            
+            response.data.data.forEach((item, index)=>{
+              selectedItems.forEach((itm, idx) => {
+                if(itm == item.id){
+                  data.push(item)
+                }
+              })
+            })
 
-//   const handleExport = () =>{
-//       let fileName = 'Users' 
-//       let result=Object.keys(checkedItems).filter((key) => checkedItems[key])
-//       let data = [];
-// 
-//       userList.data.forEach((item, index)=>{
-//         result.forEach((itm, idx) => {
-//           if(itm == item.id){
-//             data.push(item)
-//           }
-//         })
-//       })
-//       // setCollectDataExcel(data)
-// 
-//       const worksheet = XLSX.utils.json_to_sheet(data);
-//       const workbook = XLSX.utils.book_new();
-//       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-//       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-//       const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-//       saveAs(blob, `${fileName}.xlsx`);
-//   }
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
+            saveAs(blob, `${fileName}.xlsx`);
+        })
+        .catch((error)=>{
+            errorHandle.errorMessage()
+        })
+  }
 
   const handleReset = ()=>{
     setIsFilter(false)
