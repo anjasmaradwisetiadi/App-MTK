@@ -42,6 +42,9 @@ import {
     updateUsersResponseReducer,
     deleteUsersResponseReducer 
 } from "../../store/Users/Users";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx/xlsx.mjs';
+
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -54,6 +57,8 @@ const Users = () => {
   const [isFilter, setIsFilter] = useState(false);
   const [filterFirstName, setFilterFirstName] = useState('');
   const [filterLastName, setFilterLastName] = useState('');
+  const [checkedItems, setCheckedItems] = useState({});
+  const [isAllCheckedOnPage, setIsAllCheckedOnPage] = useState(false);
 //   const [getListUsers, setGetListUsers] = useState(null);
 
   const getListUsers = useSelector((state) => state.users.usersList );
@@ -67,10 +72,17 @@ const Users = () => {
     dispatch(getListUsersService(pagePayload())); // Anda bisa menambahkan payload jika diperlukan
   }, [dispatch]);
 
+  useEffect(()=>{
+    if(getListUsers){
+      const allCheckedOnPage = getListUsers?.data?.every((item) => checkedItems[item.id]);
+      setIsAllCheckedOnPage(allCheckedOnPage)
+    }
+  },[getListUsers])
+
   const pagePayload = (
     page = 1, 
     per_page = 10
-) => {
+  ) => {
     let concatFilterParams = "";
     let urlParams = new URLSearchParams(concatFilterParams.search);
     if (page > 0) {
@@ -84,9 +96,6 @@ const Users = () => {
       concatFilterParams: urlParams.toString(),
     };
   };
-
-  const payload = useMemo(() => pagePayload(), [page, perPage]);
-
   const handleDetailModal = (id) => {
     setIsModalOpen(true);
     setTitleModal("detail_form");
@@ -125,6 +134,7 @@ const Users = () => {
   };
 
   const handleFilter = ()=>{
+    setCheckedItems({})
     if(filterFirstName.length || filterLastName.length){
       setIsFilter(true)
       const payloadFilter = {
@@ -138,6 +148,41 @@ const Users = () => {
     }
   }
 
+  const handleCheckItem = (id) => {
+      setCheckedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+
+  const handleCheckAll = () => {
+    // const newCheckedItems = { ...checkedItems };
+    // getListUsers.data.forEach((item) => {
+    //   newCheckedItems[item.id] = !isAllCheckedOnPage;
+    // });
+    // setCheckedItems(newCheckedItems);
+  };
+
+  const handleExport = () =>{
+      let fileName = 'Users' 
+      let result=Object.keys(checkedItems).filter((key) => checkedItems[key])
+      let data = [];
+
+      userList.data.forEach((item, index)=>{
+        result.forEach((itm, idx) => {
+          if(itm == item.id){
+            data.push(item)
+          }
+        })
+      })
+      // setCollectDataExcel(data)
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
+      saveAs(blob, `${fileName}.xlsx`);
+  }
+
   const handleReset = ()=>{
     setIsFilter(false)
     setFilterFirstName('')
@@ -145,6 +190,7 @@ const Users = () => {
     setPage(1);
     setPerPage(10);
     dispatch(getListUsersService(pagePayload()))
+    setCheckedItems({})
   }
 
   useEffect(()=>{
@@ -192,8 +238,8 @@ const Users = () => {
               </div>
             </div>
           </div>
-
           <div className="ml-auto flex items-center space-x-2 lg:space-x-3">
+            {/* example excel export */}
             <button 
               onClick={handleReset}
               className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 w-full ">
@@ -208,7 +254,7 @@ const Users = () => {
               <Dropdown.Item onClick={handleCreateModal}>
                 Add User
               </Dropdown.Item>
-              <Dropdown.Item>Export</Dropdown.Item>
+              <Dropdown.Item onClick={()=>handleExport()}>Export</Dropdown.Item>
             </Dropdown>
           </div>
         </div>
@@ -220,7 +266,10 @@ const Users = () => {
                   <Label htmlFor="select-all" className="sr-only">
                     Select all
                   </Label>
-                  <Checkbox id="select-all" name="select-all" />
+                  <Checkbox id="select-all" name="select-all" 
+                    checked={isAllCheckedOnPage}
+                    onChange={handleCheckAll}
+                  />
                 </Table.HeadCell>
                 <Table.HeadCell>First Name</Table.HeadCell>
                 <Table.HeadCell>Last Name</Table.HeadCell>
@@ -250,6 +299,8 @@ const Users = () => {
                                 <Checkbox
                                 aria-describedby="checkbox-1"
                                 id="checkbox-1"
+                                checked={!!checkedItems[item.id]}
+                                onChange={() => handleCheckItem(item.id)}
                                 />
                                 <label htmlFor="checkbox-1" className="sr-only">
                                 checkbox
@@ -335,8 +386,7 @@ const Users = () => {
   );
 };
 
-
-export const PaginationComponent = function (props) {
+export const PaginationComponent = (props) => {
   const { userList } = props;
   const dispatch = useDispatch();
 
